@@ -1,6 +1,7 @@
 import Field from "./field.js";
 import LifePoint from "./lifePoint.js";
 import Player from "./player.js";
+import Profile from "./../API/profile.js";
 
 export default class Duel{
     constructor(lp=8000){
@@ -9,9 +10,9 @@ export default class Duel{
         this.lifePoint.maxLifePoint = lp;
     };
 
-    StartDuel(player1, player2) {
-        this.player1 = player1;
-        this.player2 = player2;
+    StartDuel(profile1, profile2) {
+        this.player1 = new Player(profile1);
+        this.player2 = new Player(profile2);
 
         this.player1.StartDuel(this, this.lifePoint);
         this.player2.StartDuel(this, this.lifePoint);
@@ -21,12 +22,12 @@ export default class Duel{
     }
 
     ShowInfos(player) {
-        console.log(player.name + " : " + player.lifePoint);
+        console.log(player.profile.name + " : " + player.lp);
     }
 }
 
 let duel = new Duel(8000);
-let player1 = new Player("yugi");
-let player2 = new Player("kaiba");
+let profile1 = new Profile("yugi");
+let profile2 = new Profile("kaiba");
 
-duel.StartDuel(player1, player2);
+duel.StartDuel(profile1, profile2);

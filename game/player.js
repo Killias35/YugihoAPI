@@ -3,8 +3,8 @@ export default class Player{
     lp = 0;
     deck = [];
 
-    constructor(name){
-        this.name = name;
+    constructor(profile){
+        this.profile = profile;
     }
 
     StartDuel(duel, lifePoint){

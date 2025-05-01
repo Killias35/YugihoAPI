@@ -3,11 +3,11 @@ export default class LifePoint {
 
     resetLifePointOfPlayer(player) {
         // calcul des lp restants
-        player.lifePoint = this.maxLifePoint;
+        player.lp = this.maxLifePoint;
     }
 
     setLifePointOfPlayer(player, lifePoint) {
         // calcul des lp restants
-        player.lifePoint = lifePoint;
+        player.lp = lifePoint;
     }
 }
