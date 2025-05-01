@@ -45,8 +45,16 @@ export default class Duel{
 
 function ShowInfos(player) {
     console.log(player.profile.name + " : " + player.lp);
-    player.field.printZone("deckField", player.profile.id);
-    player.field.printZone("handField", player.profile.id);
-    player.field.printZone("extraDeckField", player.profile.id);
+    console.log(player.field.GetZone("deckField", player.profile.id).length + " cartes dans le deck");
+    console.log(player.field.GetZone("handField", player.profile.id).length + " cartes dans la main");
+    console.log(player.field.GetZone("extraDeckField", player.profile.id).length + " cartes dans l'extra deck");
+    console.log(player.field.GetZone("spellField", player.profile.id).length + " cartes dans la zone magie");
+    console.log(player.field.GetZone("fieldSpellField", player.profile.id).length + " cartes dans la zone magie terrain");
+    console.log(player.field.GetZone("monsterField", player.profile.id).length + " cartes dans la zone monstre");
+    console.log(player.field.GetZone("discardField", player.profile.id).length + " cartes dans la zone d'abandon");
+    console.log(player.field.GetZone("banishField", player.profile.id).length + " cartes dans la zone de bannissement");
+    console.log(player.field.GetZone("linkField").length + " cartes dans la zone de lien");
+    console.log("\n");
+
 }
 

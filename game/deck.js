@@ -19,7 +19,7 @@ export default class deck{
     }
 
     DrawCard(){
-        this.player.field.moveCard(this.player.profile.id, this.cardListe[0], "deckField", "handField");
+        this.player.field.MoveCard(this.player.profile.id, this.cardListe[0], "deckField", "handField");
     }
 
     AddCard(card){

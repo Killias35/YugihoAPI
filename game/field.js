@@ -5,7 +5,6 @@ export default class Field {
         this.deckCapacity = deckCapacity;
         this.extraDeckCapacity = extraDeckCapacity;
         this.fieldLength = fieldLength;
-        this.linkSpace = [];   // Zone de lien
 
         /*
         this.fieldSpellField = {};  // Zone magie terrain
@@ -16,6 +15,7 @@ export default class Field {
         this.spellField = {};   // Zone magie & piège
         this.deckField = {};    // Zone de deck
         this.handField = {};    // Zone de main
+        this.linkField = [];   // Zone de lien
         */
         // Initialisation des zones avec un tableau vide pour chaque zone
 
@@ -28,12 +28,17 @@ export default class Field {
             this.initZone('spellField', id);
             this.initZone('deckField', id);
             this.initZone('handField', id);
+            this.initZone('linkField', id);
         });
     }
 
     // Méthode pour initialiser une zone avec un tableau vide
     initZone(zoneName, playerId) {
-        this[zoneName+"/"+playerId] = {
+        var identifier = '/'+playerId;
+        if (zoneName === 'linkField') {
+            identifier = '';
+        }
+        this[zoneName+identifier] = {
             cards: [], // Liste des cartes dans la zone
             maxCapacity: this.fieldLength, // Optionnel, capacité maximale de la zone (ex: nombre maximum de cartes par zone)
             addCard(card) {
@@ -75,8 +80,17 @@ export default class Field {
         this['extraDeckField/'+id2].cards = deck2.extraCardListe;
     }
 
+    GetZone(zoneName, playerId) {
+        var identifier = '/'+playerId;
+        if (zoneName === 'linkField') {
+            identifier = '';
+        }
+        console.log(zoneName+identifier);
+        return this[zoneName+identifier].cards;
+    }
+
     // Déplacer une carte d'une zone à une autre
-    moveCard(playerId, card, fromZone, toZone) {
+    MoveCard(playerId, card, fromZone, toZone) {
         // Retirer la carte de la zone source
         this[fromZone+"/"+playerId].removeCard(card.id);
 
@@ -85,7 +99,7 @@ export default class Field {
     }
 
     // Afficher une zone pour déboguer
-    printZone(zoneName, id) {
+    PrintZone(zoneName, id) {
         console.log(`${zoneName}:`, this[zoneName+"/"+id].getCards());
     }
 }
