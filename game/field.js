@@ -70,6 +70,9 @@ export default class Field {
     SetUpField(deck1, id1, deck2, id2) {
         this['deckField/'+id1].cards = deck1.cardListe;
         this['deckField/'+id2].cards = deck2.cardListe;
+
+        this['extraDeckField/'+id1].cards = deck1.extraCardListe;
+        this['extraDeckField/'+id2].cards = deck2.extraCardListe;
     }
 
     // Déplacer une carte d'une zone à une autre
@@ -82,8 +85,8 @@ export default class Field {
     }
 
     // Afficher une zone pour déboguer
-    printZone(zoneName) {
-        console.log(`${zoneName}:`, this[zoneName].getCards());
+    printZone(zoneName, id) {
+        console.log(`${zoneName}:`, this[zoneName+"/"+id].getCards());
     }
 }
 

@@ -28,7 +28,7 @@ export default class Duel{
         this.player1.StartDuel(this, this.field, this.lifePoint);
         this.player2.StartDuel(this, this.field, this.lifePoint);
         this.field.SetUpField(this.player1.deck, this.player1.profile.id, this.player2.deck, this.player2.profile.id);
-        
+
         console.log("\n\n\n\n\n\n\n\n\nC'est l'heure du duel !");
 
         for (let i = 0; i < 5; i++) {
@@ -45,5 +45,8 @@ export default class Duel{
 
 function ShowInfos(player) {
     console.log(player.profile.name + " : " + player.lp);
+    player.field.printZone("deckField", player.profile.id);
+    player.field.printZone("handField", player.profile.id);
+    player.field.printZone("extraDeckField", player.profile.id);
 }
 

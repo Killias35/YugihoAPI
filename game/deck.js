@@ -1,11 +1,13 @@
 export default class deck{
     nameDeck = "";
     cardListe = [];
+    extraCardListe = [];
     player = null;
 
-    constructor(nameDeck, cardList){
+    constructor(nameDeck, cardList, extraCardListe){
         this.nameDeck = nameDeck;
         this.cardListe = cardList;
+        this.extraCardListe = extraCardListe;
         this.ShuffleDeck();
     }
 
@@ -18,7 +20,6 @@ export default class deck{
 
     DrawCard(){
         this.player.field.moveCard(this.player.profile.id, this.cardListe[0], "deckField", "handField");
-        console.log(this.cardListe.length);
     }
 
     AddCard(card){
