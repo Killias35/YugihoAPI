@@ -10,6 +10,7 @@ export default class Duel{
         this.deckCardLimite = deckCardLimite;
         this.extraDeckCapacity = extraDeckCapacity;
         this.fieldLength = fieldLength;
+        this.playerTurn = null;
     };
 
     StartDuel(profile1, profile2) {
@@ -36,8 +37,8 @@ export default class Duel{
             this.player2.deck.DrawCard();            
         }
 
-        ShowInfos(this.player1);
-        ShowInfos(this.player2);
+        this.playerTurn = ChoosePlayerTurn(this.player1, this.player2);
+        console.log(this.playerTurn.profile.name + " commence");
     }
 
 }
@@ -58,3 +59,10 @@ function ShowInfos(player) {
 
 }
 
+function ChoosePlayerTurn(player1, player2) {
+    if (Math.random() < 0.5) {
+        return player1;
+    } else {
+        return player2;
+    }
+}
