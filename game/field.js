@@ -20,29 +20,30 @@ export default class Field {
         // Initialisation des zones avec un tableau vide pour chaque zone
 
         [this.playerId1, this.playerId2].forEach(id => {
-            this.initZone('fieldSpellField', id);
-            this.initZone('monsterField', id);
-            this.initZone('discardField', id);
-            this.initZone('banishField', id);
-            this.initZone('extraDeckField', id);
-            this.initZone('spellField', id);
-            this.initZone('deckField', id);
-            this.initZone('handField', id);
-            this.initZone('linkField', id);
+            this.initZone('fieldSpellField', id, true, 1);
+            this.initZone('monsterField', id, true, this.fieldLength);
+            this.initZone('discardField', id, false, 0);
+            this.initZone('banishField', id, false, 0);
+            this.initZone('extraDeckField', id, false, this.extraDeckCapacity);
+            this.initZone('spellField', id, true, this.fieldLength);
+            this.initZone('deckField', id, false, this.deckCapacity);
+            this.initZone('handField', id, false, 0);
+            this.initZone('linkField', id, true, 2);
         });
     }
 
     // Méthode pour initialiser une zone avec un tableau vide
-    initZone(zoneName, playerId) {
+    initZone(zoneName, playerId, sizeLimited, capacity) {
         var identifier = '/'+playerId;
         if (zoneName === 'linkField') {
             identifier = '';
         }
         this[zoneName+identifier] = {
             cards: [], // Liste des cartes dans la zone
-            maxCapacity: this.fieldLength, // Optionnel, capacité maximale de la zone (ex: nombre maximum de cartes par zone)
+            maxCapacity: capacity, // Optionnel, capacité maximale de la zone (ex: nombre maximum de cartes par zone)
+            sizeLimited: sizeLimited,
             addCard(card) {
-                if (this.cards.length < this.maxCapacity) {
+                if (this.cards.length < this.maxCapacity || sizeLimited !== true) {
                     this.cards.push(card);
                     // console.log(`Carte ${card.name} ajoutée à la zone ${zoneName}`);
                 } else {
@@ -62,13 +63,6 @@ export default class Field {
                 return this.cards;
             }
         };
-
-        if (zoneName === 'deckField') {
-            this[zoneName+"/"+playerId].maxCapacity = this.deckCapacity;
-        }
-        else if (zoneName === 'extraDeckField') {
-            this[zoneName+"/"+playerId].maxCapacity = this.extraDeckCapacity;
-        }
     }
 
     // Initialisation du terrain avec les cartes de deux decks
@@ -85,7 +79,6 @@ export default class Field {
         if (zoneName === 'linkField') {
             identifier = '';
         }
-        console.log(zoneName+identifier);
         return this[zoneName+identifier].cards;
     }
 

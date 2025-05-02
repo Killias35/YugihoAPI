@@ -6,10 +6,13 @@ export default class Player{
     field = null;
     lifePoint = null;
     profile = null;
+    normalSummonLeft = 1;
+    specialSummonLeft = -1;
 
     constructor(profile){
         this.profile = profile;
         this.deck = profile.selectedDeck;
+        this.id = profile.id;
     }
 
     StartDuel(duel, field, lifePoint){
