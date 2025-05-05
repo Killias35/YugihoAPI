@@ -7,7 +7,7 @@ export default class DeckData {
         const { deck_id, card_id, quantity, zone } = data;
         return new Promise((resolve, reject) => {
             this.connection.query(
-                `INSERT INTO deck_data (deck_id, card_id, quantity, zone)
+                `INSERT IGNORE INTO deck_data (deck_id, card_id, quantity, zone)
                 VALUES (?, ?, ?, ?)`,
                 [deck_id, card_id, quantity, zone],
                 (err, result) => {

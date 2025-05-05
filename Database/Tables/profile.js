@@ -9,7 +9,7 @@ export default class Profile{
         const { uuid, pseudo, password } = profileData;
         return new Promise((resolve, reject) => {
             this.connection.query(
-                'INSERT INTO profile (uuid, pseudo, password) VALUES (?, ?, ?)',
+                'INSERT IGNORE INTO profile (uuid, pseudo, password) VALUES (?, ?, ?)',
                 [uuid, pseudo, password],
                 (err, result) => {
                     if (err) return reject(err);

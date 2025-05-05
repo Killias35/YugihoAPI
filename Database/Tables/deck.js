@@ -7,7 +7,7 @@ export default class Deck {
         const { deck_id, nom_deck, private: isPrivate, main_size, extra_size, side_size, created_by } = data;
         return new Promise((resolve, reject) => {
             this.connection.query(
-                `INSERT INTO deck 
+                `INSERT IGNORE INTO deck 
                 (deck_id, nom_deck, private, main_size, extra_size, side_size, created_by)
                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [deck_id, nom_deck, isPrivate, main_size, extra_size, side_size, created_by],

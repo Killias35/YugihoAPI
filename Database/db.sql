@@ -34,6 +34,8 @@ CREATE TABLE card_translations (
 
     FOREIGN KEY (card_id) REFERENCES cards(id)
 );
+ALTER TABLE card_translations
+ADD CONSTRAINT unique_card_language UNIQUE (card_id, language_code);
 
 -- Table des effets des cartes
 CREATE TABLE IF NOT EXISTS card_effect (

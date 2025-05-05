@@ -6,12 +6,19 @@ import CardEffect from './Tables/cardEffect.js';
 import Deck from './Tables/deck.js';
 import DeckData from './Tables/deckData.js';
 import Cards from './Tables/cards.js';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 
 export default class Database {
     constructor() {
         // Charger la configuration depuis le fichier .json
-        const config = JSON.parse(fs.readFileSync('.conf.json', 'utf8'));
+
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        const filePath = path.join(__dirname, '.conf.json');
+        const config = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
         this.connection = mysql.createConnection(config);
 
         this.profile = new Profile(this.connection);

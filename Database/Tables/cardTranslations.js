@@ -4,13 +4,13 @@ export default class CardTranslations {
     }
 
     addTranslation(data) {
-        const { card_id, language_code, name, type, description, level, attribute, race } = data;
+        const { card_id, language_code, name, type, description, level, attribute, race, typeLine} = data;
         return new Promise((resolve, reject) => {
             this.connection.query(
-                `INSERT INTO card_translations 
-                (card_id, language_code, name, type, description, level, attribute, race)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                [card_id, language_code, name, type, description, level, attribute, race],
+                `INSERT IGNORE INTO card_translations 
+                (card_id, language_code, name, type, description, level, attribute, race, typeLine)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [card_id, language_code, name, type, description, level, attribute, race, typeLine],
                 (err, result) => {
                     if (err) return reject(err);
                     resolve({ id: result.insertId, ...data });
@@ -20,11 +20,11 @@ export default class CardTranslations {
     }
 
     editTranslation(id, data) {
-        const { language_code, name, type, description, level, attribute, race } = data;
+        const { language_code, name, type, description, level, attribute, race, typeLine} = data;
         return new Promise((resolve, reject) => {
             this.connection.query(
                 `UPDATE card_translations 
-                 SET language_code = ?, name = ?, type = ?, description = ?, level = ?, attribute = ?, race = ?
+                 SET language_code = ?, name = ?, type = ?, description = ?, level = ?, attribute = ?, race = ?, typeLine = ?
                  WHERE id = ?`,
                 [language_code, name, type, description, level, attribute, race, id],
                 (err, result) => {

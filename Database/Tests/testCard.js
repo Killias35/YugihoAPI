@@ -12,6 +12,8 @@ export default class TestCards {
             id: "1234567890",
             atk: randomInt(1000, 3000),
             def: randomInt(1000, 3000),
+            type: 'Monster', 
+            frameType: 'xyz',
             archetype: 'Dragon',
             image_url: 'https://example.com/card.png'
         };
@@ -24,6 +26,8 @@ export default class TestCards {
         const updatedData = {
             atk: 2500,
             def: 2000,
+            type: 'Monster', 
+            frameType: 'effect monster',
             archetype: 'Magicien',
             image_url: 'https://example.com/card-edited.png'
         };
@@ -82,7 +86,8 @@ export default class TestCards {
             description: 'This legendary dragon is a powerful engine of destruction.',
             level: 8,
             attribute: 'LIGHT',
-            race: 'Dragon'
+            race: 'Dragon',
+            typeLine: '[Effect, XYZ]'
         };
 
         const result = await this.db.cardTranslations.addTranslation(translationData);

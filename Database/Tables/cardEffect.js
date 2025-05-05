@@ -7,7 +7,7 @@ export default class CardEffect {
         const { card_id, effect } = data;
         return new Promise((resolve, reject) => {
             this.connection.query(
-                'INSERT INTO card_effect (card_id, effect) VALUES (?, ?)',
+                'INSERT IGNORE INTO card_effect (card_id, effect) VALUES (?, ?)',
                 [card_id, effect],
                 (err, result) => {
                     if (err) return reject(err);

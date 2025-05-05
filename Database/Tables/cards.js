@@ -4,11 +4,11 @@ export default class Cards {
     }
 
     addCard(data) {
-        const {id, atk, def, archetype, image_url } = data;
+        const {id, atk, def, type, frameType, archetype, image_url } = data;
         return new Promise((resolve, reject) => {
             this.connection.query(
-                'INSERT INTO cards (id, atk, def, archetype, image_url) VALUES (?, ?, ?, ?, ?)',
-                [id, atk, def, archetype, image_url],
+                'INSERT IGNORE INTO cards (id, atk, def, type, frameType, archetype, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [id, atk, def, type, frameType, archetype, image_url],
                 (err, result) => {
                     if (err) return reject(err);
                     resolve({ id: result.insertId, ...data });
@@ -18,10 +18,10 @@ export default class Cards {
     }
 
     editCard(id, data) {
-        const { atk, def, archetype, image_url } = data;
+        const { atk, def, type, frameType, archetype, image_url } = data;
         return new Promise((resolve, reject) => {
             this.connection.query(
-                'UPDATE cards SET atk = ?, def = ?, archetype = ?, image_url = ? WHERE id = ?',
+                'UPDATE cards SET atk = ?, def = ?, type = ?, frameType = ?, archetype = ?, image_url = ? WHERE id = ?',
                 [atk, def, archetype, image_url, id],
                 (err, result) => {
                     if (err) return reject(err);
@@ -45,7 +45,7 @@ export default class Cards {
     }
 
     searchCards(criteria) {
-        // citeria : JSON { name, type, description, level, attribute, race, atkMin, atkMax, defMin, defMax, archetype }
+        // citeria : JSON { name, type, frameType, description, level, attribute, race, atkMin, atkMax, defMin, defMax, archetype }
         const connection = this.connection;
         const conditions = [];
         const values = [];
