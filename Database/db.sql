@@ -1,6 +1,6 @@
 -- Création de la base de données
 CREATE DATABASE IF NOT EXISTS YuGiHoAPI;
--- USE YuGiHoAPI; -- Utiliser cette base de données
+USE YuGiHoAPI;
 
 -- Table des cartes
 CREATE TABLE IF NOT EXISTS cards (
