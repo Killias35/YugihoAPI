@@ -1,6 +1,6 @@
 -- Création de la base de données
 CREATE DATABASE IF NOT EXISTS YuGiHoAPI;
-USE YuGiHoAPI;
+-- USE YuGiHoAPI; -- Utiliser cette base de données
 
 -- Table des cartes
 CREATE TABLE IF NOT EXISTS cards (
@@ -27,6 +27,7 @@ CREATE TABLE card_translations (
     level INT,
     attribute VARCHAR(50),
     race VARCHAR(100),
+    typeLine VARCHAR(100),
     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
