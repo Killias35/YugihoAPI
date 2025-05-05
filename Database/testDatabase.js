@@ -1,47 +1,41 @@
-import Database from './dataAcess.js';
-import { randomInt, randomUUID } from 'crypto';
-
-
-async function TestAddProfile() {
-    const db = new Database();
-
-    // Données du profil
-    const profileData = {
-        uuid: randomUUID(),
-        pseudo: 'Yugi'+randomInt(1000),
-        password: '12345'
-    };
-
-    const result = await db.profile.addProfile(profileData)
-    console.log(result);       
-}
-
-async function TestRemoveProfile(uuid) {
-    const db = new Database();
-    const result = await db.profile.removeProfile(uuid)
-    console.log(result);       
-}
-
-async function TestEditProfile(profileData) {
-    const db = new Database();
-    const result = await db.profile.editProfile(profileData)
-    console.log(result);       
-}
+import Database from "./dataAcess.js";
+import TestProfile from "./Tests/testProfile.js";
+import TestDeck from "./Tests/testDeck.js";
+import TestCards from "./Tests/testCard.js";
 
 async function ResetDB() {
     const db = new Database();
 
     console.log(await db.resetDB());
+    db.close();
+}
+
+async function testProfiles() {
+    const db = new Database();   
+    const test = new TestProfile(db);
+    await test.TestProfiles();
+
+    db.close();
+}
+
+async function testDecks() {
+    const db = new Database();   
+    const test = new TestDeck(db);
+    await test.TestDecks();
+
+    db.close();
+}
+
+async function testCards() {
+    const db = new Database();   
+    const test = new TestCards(db);
+    await test.TestCards();
+
+    db.close();
 }
 
 //ResetDB();
-//TestAddProfile();
-//TestRemoveProfile("9bbf3e6a-523c-4400-8056-b7420dca9d87");
+//testProfiles();
+//testCards();
+//testDecks();
 
-const profile = {
-    uuid: "9bbf3e6a-523c-4400-8056-b7420dca9d87",
-    pseudo: 'Yugi'+randomInt(1000),
-    password: '12345'
-};
-
-TestEditProfile(profile);

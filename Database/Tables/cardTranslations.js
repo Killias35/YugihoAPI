@@ -1,0 +1,50 @@
+export default class CardTranslations {
+    constructor(connection) {
+        this.connection = connection;
+    }
+
+    addTranslation(data) {
+        const { card_id, language_code, name, type, description, level, attribute, race } = data;
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                `INSERT INTO card_translations 
+                (card_id, language_code, name, type, description, level, attribute, race)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [card_id, language_code, name, type, description, level, attribute, race],
+                (err, result) => {
+                    if (err) return reject(err);
+                    resolve({ id: result.insertId, ...data });
+                }
+            );
+        });
+    }
+
+    editTranslation(id, data) {
+        const { language_code, name, type, description, level, attribute, race } = data;
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                `UPDATE card_translations 
+                 SET language_code = ?, name = ?, type = ?, description = ?, level = ?, attribute = ?, race = ?
+                 WHERE id = ?`,
+                [language_code, name, type, description, level, attribute, race, id],
+                (err, result) => {
+                    if (err) return reject(err);
+                    resolve(result.affectedRows > 0 ? { id, ...data } : null);
+                }
+            );
+        });
+    }
+
+    removeTranslation(id) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                'DELETE FROM card_translations WHERE id = ?',
+                [id],
+                (err, result) => {
+                    if (err) return reject(err);
+                    resolve(result.affectedRows > 0);
+                }
+            );
+        });
+    }
+}

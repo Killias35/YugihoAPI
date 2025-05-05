@@ -1,6 +1,12 @@
 import mysql from 'mysql2';
 import fs from 'fs';
-import Profil from './Tables/profile.js';
+import Profile from './Tables/profile.js';
+import CardTranslations from './Tables/cardTranslations.js';
+import CardEffect from './Tables/cardEffect.js';
+import Deck from './Tables/deck.js';
+import DeckData from './Tables/deckData.js';
+import Cards from './Tables/cards.js';
+
 
 export default class Database {
     constructor() {
@@ -8,11 +14,13 @@ export default class Database {
         const config = JSON.parse(fs.readFileSync('.conf.json', 'utf8'));
         this.connection = mysql.createConnection(config);
 
-        this.profile = new Profil(this.connection);
+        this.profile = new Profile(this.connection);
+        this.cardTranslations = new CardTranslations(this.connection);
+        this.cardEffect = new CardEffect(this.connection);
+        this.deck = new Deck(this.connection);
+        this.deckData = new DeckData(this.connection);
+        this.cards = new Cards(this.connection);
     }
-
-    
-
 
     async resetDB() {
         const connection = this.connection;
@@ -27,8 +35,6 @@ export default class Database {
             return '✅ Base de données réinitialisée depuis le fichier SQL.';
         } catch (err) {
             return '❌ Erreur lors de la réinitialisation : ' + err.message;
-        } finally {
-            await connection.end();
         }
     }
 

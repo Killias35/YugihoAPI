@@ -1,0 +1,7 @@
+{
+    "host":"localhost",
+    "database":"YuGiHoAPI",
+    "user": "",
+    "password": "",
+    "multipleStatements": true
+}
