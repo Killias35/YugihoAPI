@@ -97,8 +97,15 @@ export default class decksSeeders {
     const decksData = await this.GetStructuresDeck();
   
     for (const deckData of decksData) {
-      const deck = await this.db.deck.addDeck(deckData[0]);
-      await this.db.deckData.addDeckDataWithCards(deck, deckData[1]);
+      try{
+        const deck = await this.db.deck.addDeck(deckData[0]);
+        await this.db.deckData.addDeckDataWithCards(deck, deckData[1]);
+        console.log("✅ Deck ajouté :", deck.nom_deck);
+      }
+      catch (err) {
+        console.error("Erreur lors de l'ajout du deck :", err);
+        this.db.connection.rollback();
+      }
     }
   
     this.db.close(); // Ne sera appelé que lorsque tout est terminé

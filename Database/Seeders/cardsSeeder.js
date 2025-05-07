@@ -20,7 +20,7 @@ export default class CardsSeeder {
       type: card.type || null,
       frameType: card.frameType || null,
       archetype: card.archetype || null,
-      image_url: card.card_images?.[0]?.image_url || null,
+      image_url: card.card_images || null,
 
       card_id: card.id.toString(),
       language_code: this.language_code,
@@ -43,8 +43,14 @@ export default class CardsSeeder {
   }
 
   async insertCard(card) {
-    this.db.cards.addCard(card);
-    this.db.cardTranslations.addTranslation(card);
+    card.image_url.forEach(image => {
+      const cardData = { ...card };
+      cardData.id = image.id;
+      cardData.image_url = image.image_url;
+      
+      this.db.cards.addCard(cardData);
+      this.db.cardTranslations.addTranslation(card);
+    });
   }
 
   async insertAllCards() {

@@ -41,8 +41,8 @@ async function testCards() {
     db.close();
 }
 
-//ResetDB();
-resetDecks();
+ResetDB();
+//resetDecks();
 //testProfiles();
 //testCards();
 //testDecks();
