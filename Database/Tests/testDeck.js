@@ -46,7 +46,7 @@ export default class TestDeck {
             zone: "main"
         };
 
-        const result = await this.db.deckData.addCardToDeck(cardData);
+        const result = await this.db.deckData.addCardsToDeck(cardData);
         return result;
     }
 

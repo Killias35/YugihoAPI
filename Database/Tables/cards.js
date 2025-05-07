@@ -44,12 +44,16 @@ export default class Cards {
         });
     }
 
-    searchCards(criteria) {
-        // citeria : JSON { name, type, frameType, description, level, attribute, race, atkMin, atkMax, defMin, defMax, archetype }
+    async searchCards(criteria = {language_code: 'fr'}) {
+        // citeria : JSON { language_code, name, type, frameType, description, level, attribute, race, atkMin, atkMax, defMin, defMax, archetype }
         const connection = this.connection;
         const conditions = [];
         const values = [];
-    
+        if (criteria.language_code) {
+            conditions.push("t.language_code LIKE ?");
+            values.push(`%${criteria.language_code}%`);
+        }
+
         if (criteria.name) {
             conditions.push("t.name LIKE ?");
             values.push(`%${criteria.name}%`);
@@ -115,10 +119,10 @@ export default class Cards {
             ${whereClause}
         `;
     
-        return new Promise((resolve, reject) => {
+        return await new Promise((resolve, reject) => {
             connection.query(sql, values, (err, results) => {
                 if (err) return reject(err);
-                resolve(results);
+                resolve(results.length > 0 ? results : null);
             });
         });
     }

@@ -13,7 +13,6 @@ import path from 'path';
 export default class Database {
     constructor() {
         // Charger la configuration depuis le fichier .json
-
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
 

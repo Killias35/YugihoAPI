@@ -3,13 +3,18 @@ export default class DeckData {
         this.connection = connection;
     }
 
-    addCardToDeck(data) {
+    addDeckDataWithCards(deck, cardList) {
+        cardList.forEach(card => {
+            const data = { deck_id: deck.id, card_id: card.id, quantity: card.quantity, zone: card.zone };
+            this.addCardsToDeck(data);
+        });
+    }
+
+    addCardsToDeck(data, qtt = 1) {
         const { deck_id, card_id, quantity, zone } = data;
+        qtt = quantity || qtt;
         return new Promise((resolve, reject) => {
-            this.connection.query(
-                `INSERT IGNORE INTO deck_data (deck_id, card_id, quantity, zone)
-                VALUES (?, ?, ?, ?)`,
-                [deck_id, card_id, quantity, zone],
+            this.connection.query('CALL addCardToDeck(?, ?, ?, ?)', [deck_id, card_id, qtt, zone], 
                 (err, result) => {
                     if (err) return reject(err);
                     resolve({ id: result.insertId, ...data });

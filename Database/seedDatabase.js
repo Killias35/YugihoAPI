@@ -36,9 +36,6 @@ if (hasDecks) {
 
 if (!hasCards && !hasProfile && !hasDecks) {
     console.error("Aucune option n'a été choisie.");
-    console.error("Utilisez --cards, --profile ou --decks.");
+    console.error("Utilisez --cards, --profiles ou --decks.");
     process.exit(1);
-}
-else {
-    console.log("✅ Base de données remplie.");
 }
