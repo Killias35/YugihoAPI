@@ -98,8 +98,8 @@ CREATE INDEX idx_card_race ON card_translations(race);
 CREATE INDEX idx_card_atk ON cards(atk);
 CREATE INDEX idx_card_def ON cards(def);
 
-DELIMITER $$
-
+-- 2) (Re)créez la procédure
+DROP PROCEDURE IF EXISTS addCardToDeck;
 CREATE PROCEDURE addCardToDeck(
   IN p_deck_id   VARCHAR(100),
   IN p_card_id   VARCHAR(100),
@@ -110,7 +110,6 @@ BEGIN
   DECLARE existing_quantity INT DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET existing_quantity = 0;
 
-  -- Si pas de ligne, handler met existing_quantity à 0 au lieu d'erreur
   SELECT quantity
     INTO existing_quantity
   FROM deck_data
@@ -128,11 +127,10 @@ BEGIN
       AND card_id = p_card_id
       AND zone    = p_zone;
   ELSE
-      DELETE FROM deck_data
-      WHERE deck_id = p_deck_id
-        AND card_id = p_card_id
-        AND zone    = p_zone;
+    DELETE FROM deck_data
+    WHERE deck_id = p_deck_id
+      AND card_id = p_card_id
+      AND zone    = p_zone;
   END IF;
-END$$
+END;
 
-DELIMITER ;
