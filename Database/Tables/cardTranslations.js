@@ -25,8 +25,8 @@ export default class CardTranslations {
             this.connection.query(
                 `UPDATE card_translations 
                  SET language_code = ?, name = ?, type = ?, description = ?, level = ?, attribute = ?, race = ?, typeLine = ?
-                 WHERE id = ?`,
-                [language_code, name, type, description, level, attribute, race, id],
+                 WHERE id LIKE ?`,
+                [language_code, name, type, description, level, attribute, race, typeLine, id],
                 (err, result) => {
                     if (err) return reject(err);
                     resolve(result.affectedRows > 0 ? { id, ...data } : null);

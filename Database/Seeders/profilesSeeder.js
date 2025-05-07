@@ -13,7 +13,7 @@ export default class ProfilesSeeder {
       password: '12345'
     };
 
-    this.db.profile.addProfile(profile);
+    await this.db.profile.addProfile(profile);
     this.db.close();
   }
 }

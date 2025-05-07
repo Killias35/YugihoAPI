@@ -45,7 +45,6 @@ export default class CardsSeeder {
   async insertCard(card) {
     this.db.cards.addCard(card);
     this.db.cardTranslations.addTranslation(card);
-    console.log(`✅ Carte ${card.name} insérée.`);
   }
 
   async insertAllCards() {
@@ -54,6 +53,7 @@ export default class CardsSeeder {
       const jsonCard = this.decodeCardJSON(this.getCard(cards, i));
       await this.insertCard(jsonCard);
     }
+    console.log('✅ ' + cards.length + ' cartes ont été ajoutées.');
     this.db.close();
   }
-}
+} 

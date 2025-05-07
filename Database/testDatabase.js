@@ -10,6 +10,13 @@ async function ResetDB() {
     db.close();
 }
 
+async function resetDecks() {
+    const db = new Database();
+
+    console.log(await db.resetDecks());
+    db.close();
+}
+
 async function testProfiles() {
     const db = new Database();   
     const test = new TestProfile(db);
@@ -34,7 +41,8 @@ async function testCards() {
     db.close();
 }
 
-ResetDB();
+//ResetDB();
+resetDecks();
 //testProfiles();
 //testCards();
 //testDecks();

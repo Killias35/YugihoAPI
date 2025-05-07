@@ -7,7 +7,6 @@ export default class TestDeck {
 
     async TestAddDeck() {
         const deckData = {
-            deck_id: randomUUID(),
             nom_deck: 'Deck Yugi ' + randomInt(1000),
             private: false,
             main_size: 40,
@@ -20,21 +19,21 @@ export default class TestDeck {
         return result;
     }
 
-    async TestEditDeck(deck_id, deckData) {
+    async TestEditDeck(id, deckData) {
         deckData.nom_deck = 'Deck Kaiba';
         deckData.main_size = 41;
 
-        const result = await this.db.deck.editDeck(deck_id, deckData);
+        const result = await this.db.deck.editDeck(id, deckData);
         return result;
     }
 
-    async TestRemoveDeck(deck_id) {
-        const result = await this.db.deck.removeDeck(deck_id);
+    async TestRemoveDeck(id) {
+        const result = await this.db.deck.removeDeck(id);
         return result;
     }
 
-    async TestGetDeck(deck_id) {
-        const result = await this.db.deck.getDeck(deck_id);
+    async TestGetDeck(id) {
+        const result = await this.db.deck.getDeck(id);
         return result;
     }
 
@@ -50,23 +49,23 @@ export default class TestDeck {
         return result;
     }
 
-    async TestEditCardInDeck(deckCardId) {
+    async TestEditCardInDeck(deck_id) {
         const newData = {
             quantity: 3,
             zone: "side"
         };
 
-        const result = await this.db.deckData.editCardInDeck(deckCardId, newData);
+        const result = await this.db.deckData.editCardInDeck(deck_id, newData);
         return result;
     }
 
-    async TestRemoveCardFromDeck(deckCardId) {
-        const result = await this.db.deckData.removeCardFromDeck(deckCardId);
+    async TestRemoveCardFromDeck(deck_id) {
+        const result = await this.db.deckData.removeCardFromDeck(deck_id);
         return result;
     }
 
-    async TestGetDeckData(deck_id) {
-        const result = await this.db.deckData.getDeckData(deck_id);
+    async TestGetDeckData(id) {
+        const result = await this.db.deckData.getDeckData(id);
         return result;
     }
 
@@ -78,10 +77,10 @@ export default class TestDeck {
             const addedDeck = await this.TestAddDeck();
             console.log("✅ Deck ajouté :", addedDeck);
     
-            const editedDeck = await this.TestEditDeck(addedDeck.deck_id, addedDeck);
+            const editedDeck = await this.TestEditDeck(addedDeck.id, addedDeck);
             console.log("✏️ Deck modifié :", editedDeck);
     
-            const fetchedDeck = await this.TestGetDeck(addedDeck.deck_id);
+            const fetchedDeck = await this.TestGetDeck(addedDeck.id);
             console.log("🔍 Deck récupéré :", fetchedDeck);
     
             // Vérifie s'il existe une carte, sinon en crée une
@@ -97,19 +96,19 @@ export default class TestDeck {
                 });
                 cardCreatedForTest = true;
     
-            const addedDeckCard = await this.TestAddCardToDeck(addedDeck.deck_id, card.id);
+            const addedDeckCard = await this.TestAddCardToDeck(addedDeck.id, card.id);
             console.log("🃏 Carte ajoutée au deck :", addedDeckCard);
     
             const editedDeckCard = await this.TestEditCardInDeck(addedDeckCard.id);
             console.log("✏️ Carte dans deck modifiée :", editedDeckCard);
     
-            const deckContents = await this.TestGetDeckData(addedDeck.deck_id);
+            const deckContents = await this.TestGetDeckData(addedDeck.id);
             console.log("📦 Contenu du deck :", deckContents);
     
             const removedDeckCard = await this.TestRemoveCardFromDeck(addedDeckCard.id);
             console.log("🗑️ Carte retirée du deck :", removedDeckCard ? "✔️ Succès" : "❌ Échec");
     
-            const removedDeck = await this.TestRemoveDeck(addedDeck.deck_id);
+            const removedDeck = await this.TestRemoveDeck(addedDeck.id);
             console.log("🗑️ Deck supprimé :", removedDeck ? "✔️ Succès" : "❌ Échec");
     
             if (cardCreatedForTest) {

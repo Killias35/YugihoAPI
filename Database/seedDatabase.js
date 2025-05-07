@@ -13,23 +13,23 @@ const hasDecks = args.includes('--decks');
 if (hasCards) {
 
     var cardsSeeder = new CardsSeeder("FR");
-    cardsSeeder.insertAllCards();
+    await cardsSeeder.insertAllCards();
     console.log("✅ Cartes francaises ajoutées.");
 
     cardsSeeder = new CardsSeeder("EN");
-    cardsSeeder.insertAllCards();
+    await cardsSeeder.insertAllCards();
     console.log("✅ Cartes anglaises ajoutées.");
 }
 
 if (hasProfile) {
     const profilesSeeder = new ProfilesSeeder();
-    profilesSeeder.insertAllProfiles();
+    await profilesSeeder.insertAllProfiles();
     console.log("✅ Profils ajoutés.");
 }
 
 if (hasDecks) {
     const decksSeeder = new DecksSeeder();
-    decksSeeder.insertAllDecks();
+    await decksSeeder.insertAllDecks();
     console.log("✅ Decks ajoutés.");
 }
 

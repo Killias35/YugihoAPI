@@ -44,6 +44,17 @@ export default class Database {
         }
     }
 
+    async resetDecks() {
+        const connection = this.connection;
+    
+        try {
+            connection.query("SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE deck_data; TRUNCATE TABLE deck; SET FOREIGN_KEY_CHECKS = 1;");
+            return '✅ Decks réinitialisés depuis le fichier SQL.';
+        } catch (err) {
+            return '❌ Erreur lors de la réinitialisation : ' + err.message;
+        }
+    }
+
     // Fermer la connexion
     close() {
         this.connection.end();
