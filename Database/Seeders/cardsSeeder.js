@@ -46,10 +46,11 @@ export default class CardsSeeder {
     card.image_url.forEach(image => {
       const cardData = { ...card };
       cardData.id = image.id;
+      cardData.card_id = image.id;
       cardData.image_url = image.image_url;
       
       this.db.cards.addCard(cardData);
-      this.db.cardTranslations.addTranslation(card);
+      this.db.cardTranslations.addTranslation(cardData);
     });
   }
 
