@@ -11,7 +11,7 @@ export default class LoginManager {
         // ne pas oublier de hash le password
         const profile = await this.database.profile.getProfile(pseudo, password);
         if(!profile) return {error: "Pseudo ou mot de passe incorrect" + profile};
-        const token = this.responseManager.getTokenFromPlayerId(profile.uuid);
+        const token = this.responseManager.getTokenFromPlayerId(profile.id);
         if (token) {
             await this.Logout(token);
         }
