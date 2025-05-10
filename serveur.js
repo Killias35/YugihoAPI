@@ -96,6 +96,10 @@ io.on('connection', (socket) => {
 
   socket.on('gameAction', async (action) => {
     // verif du token encore valide
+    if (responseManager.getTokenFromPlayerId(socket.playerId) !== socket.token) {
+      console.log(`❌ Action reçue par un joueur non autorisé : ${socket.playerId}`);
+      return disconnectSocket(socket);
+    };
 
 
     console.log(`📥 Action reçue du joueur ${socket.playerId} : ${action}`);
@@ -104,15 +108,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log(`❌ Déconnexion du joueur ${socket.playerId}`);
-    try {
-      loginManager.Logout(socket.token).then((ret) => {
-        socket.emit('gameResponse', ret);
-      })
-    } catch (err) {
-      console.error(err);
-      socket.emit('gameResponse', { error: 'Erreur serveur' });
-    }
+    disconnectSocket(socket);
   });
 });
 
@@ -120,3 +116,16 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   console.log(`\nServeur HTTP + WebSocket lancé sur http://localhost:${PORT}`);
 });
+
+
+function disconnectSocket(socket) {
+  console.log(`❌ Déconnexion du joueur ${socket.playerId}`);
+  try {
+    loginManager.Logout(socket.token).then((ret) => {
+      socket.emit('gameResponse', ret);
+    })
+  } catch (err) {
+    console.error(err);
+    socket.emit('gameResponse', { error: 'Erreur serveur' });
+  }
+}
