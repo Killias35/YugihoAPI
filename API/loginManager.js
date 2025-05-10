@@ -17,8 +17,9 @@ export default class LoginManager {
     }
 
     async Logout(token){
+        const profileId = this.responseManager.getPlayerIdFromToken(token);
         if (this.responseManager.removeSession(token)){        
-            this.database.userStats.removeUserStats(profileId);
+            this.database.userState.removeUserState(profileId);
             return {sucess: "Deconnexion reussie"};
         } else {
             return {error: "Session invalide"};

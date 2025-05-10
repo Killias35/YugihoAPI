@@ -1,4 +1,6 @@
 import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
 import rateLimit from 'express-rate-limit';
 
 import authMiddleware from './API/Middleware/auth.js';
@@ -11,22 +13,26 @@ import Database from './Database/dataAcess.js';
 import LoginManager from './API/loginManager.js';
 
 const app = express();
+const server = http.createServer(app); // Important: socket.io a besoin du serveur brut
+const io = new Server(server, {
+  cors: {
+    origin: '*'
+  }
+});
+
 const PORT = 8080;
 
 const responseManager = new ResponseManager();
 const database = new Database();
 const loginManager = new LoginManager(database, responseManager);
 
-
 app.locals.loginManager = loginManager;
 app.locals.responseManager = responseManager;
 
-
 const playerLimiter = rateLimit({
-  windowMs: 1000,      // Fenêtre de 1 seconde
-  max: 2,              // 2 requêtes maximum par fenêtre
+  windowMs: 1000,
+  max: 2,
   keyGenerator: (req) => {
-    // On identifie chaque joueur avec son token (ou son IP si pas encore loggué)
     try {
       const login = JSON.parse(req.headers['login']);
       return login.token || req.ip;
@@ -39,20 +45,17 @@ const playerLimiter = rateLimit({
   }
 });
 
-
-// Middleware pour parser le JSON
 app.use(express.json());
 app.use(playerLimiter);
 
 app.get('/login', checkLoginFormat, async (req, res) => {
-  try{
+  try {
     const ret = await loginManager.Login(req.login.name, req.login.password);
-    if(ret.error) return res.status(400).json(ret);
+    if (ret.error) return res.status(400).json(ret);
 
     console.log(req.login.name + " est connecté");
     return res.json(ret);
-
-  } catch(err){
+  } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Erreur serveur' });
   }
@@ -60,41 +63,59 @@ app.get('/login', checkLoginFormat, async (req, res) => {
 
 app.get('/register', checkRegisterFormat, async (req, res) => {
   try {
-      const ret = await loginManager.Register(req.register.name, req.register.password);
-      if (ret.error) {
-          return res.status(400).json(ret);
-      }
-      console.log(req.register.name + " est inscrit");
-      return res.json(ret);
+    const ret = await loginManager.Register(req.register.name, req.register.password);
+    if (ret.error) return res.status(400).json(ret);
+
+    console.log(req.register.name + " est inscrit");
+    return res.json(ret);
   } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Erreur serveur' });
+    console.error(err);
+    return res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
 app.get('/logout', authMiddleware, async (req, res) => {
   try {
-      const ret = await loginManager.Logout(req.token.token);
-      return res.json(ret);
+    const ret = await loginManager.Logout(req.token.token);
+    return res.json(ret);
   } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Erreur serveur' });
+    console.error(err);
+    return res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
+// ----------- WebSocket AUTH + EVENTS -----------
+io.use(async (socket, next) => {
+  const token = socket.handshake.auth?.token;
 
-// Exemple de route protégée
-app.get('/game', checkGameFormat, authMiddleware, (req, res) => {
-    const playerId = req.playerId;
-    const response = req.game.action;
+  if (!token || token === undefined) {
+    return next(new Error('Token manquant'));
+  }
+  console.log(`📡 Joueur connecté via WS : ${token}\n\n\n`);
+  const playerId = await responseManager.getPlayerIdFromToken(token);
+  if (!playerId) {
+    return next(new Error('Token invalide'));
+  }
 
-    responseManager.addResponse(playerId, response);
-
-    res.json({ success: "Bien logged" });
+  socket.playerId = playerId;
+  next();
 });
 
+io.on('connection', (socket) => {
+  console.log(`📡 Joueur connecté via WS : ${socket.playerId}`);
 
-// Démarrage du serveur
-app.listen(PORT, () => {
-  console.log(`\n\n\n\nServeur démarré sur http://localhost:${PORT}\n`);
+  socket.on('gameAction', async (action) => {
+    console.log(`📥 Action reçue du joueur ${socket.playerId} : ${action}`);
+    responseManager.addResponse(socket.playerId, action);
+    socket.emit('gameResponse', { success: true });
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`❌ Déconnexion du joueur ${socket.playerId}`);
+  });
+});
+
+// ----------- Start Server -----------
+server.listen(PORT, () => {
+  console.log(`\nServeur HTTP + WebSocket lancé sur http://localhost:${PORT}`);
 });

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebSocket Debug Tool</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #1e1e1e;
+      color: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    input, textarea, button {
+      font-family: monospace;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input, textarea {
+      background-color: #2e2e2e;
+      color: #f1f1f1;
+    }
+
+    button {
+      background-color: #007acc;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005a99;
+    }
+
+    #log {
+      background-color: #111;
+      border: 1px solid #444;
+      padding: 10px;
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔧 Test WebSocket Yu-Gi-Oh! API</h2>
+
+  <input id="tokenInput" placeholder="🔑 Entre ton token ici" />
+
+  <button onclick="connectSocket()">🔌 Se connecter</button>
+  <button onclick="disconnectSocket()">❌ Déconnecter</button>
+
+  <textarea id="jsonInput" rows="6" placeholder='📤 Entre ton JSON ici, ex: {"action": "duel", "target": "Seto Kaiba"}'></textarea>
+
+  <button onclick="sendMessage()">📨 Envoyer</button>
+
+  <div id="log">📝 Log :</div>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script>
+    let socket = null;
+
+    function log(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      const color = type === 'error' ? 'red' : type === 'success' ? 'lime' : '#f1f1f1';
+      logDiv.innerHTML += `<div style="color: ${color}">${message}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function connectSocket() {
+      const token = document.getElementById('tokenInput').value.trim();
+      if (!token) return log("⚠️ Token manquant", 'error');
+
+      socket = io("http://localhost:8080", {
+        auth: { token }
+      });
+
+      socket.on("connect", () => {
+        log("✅ Connecté avec succès", 'success');
+      });
+
+      socket.on("disconnect", () => {
+        log("❌ Déconnecté du serveur", 'error');
+      });
+
+      socket.onAny((event, data) => {
+        log(`📥 Reçu [${event}] :\n${JSON.stringify(data, null, 2)}`);
+      });
+
+      socket.on("connect_error", (err) => {
+        log(`❗ Erreur de connexion : ${err.message}`, 'error');
+      });
+    }
+
+    function disconnectSocket() {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+        log("🔌 Socket fermé");
+      }
+    }
+
+    function sendMessage() {
+      if (!socket || !socket.connected) {
+        return log("❗ Socket non connecté", 'error');
+      }
+
+      const raw = document.getElementById('jsonInput').value.trim();
+      if (!raw) return;
+
+      try {
+        const json = JSON.parse(raw);
+        socket.emit("gameAction", json);
+        log(`📤 Envoyé : ${JSON.stringify(json)}`, 'success');
+      } catch (err) {
+        log("❗ JSON invalide : " + err.message, 'error');
+      }
+    }
+  </script>
+
+</body>
+</html>

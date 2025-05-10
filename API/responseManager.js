@@ -17,7 +17,7 @@ export default class ResponseManager {
     }
     
     getPlayerIdFromToken(token) {
-        return this.sessions[token];
+        return this.sessions[token] || null;
     }
     
     isLoggedIn(token) {
