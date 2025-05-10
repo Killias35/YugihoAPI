@@ -108,7 +108,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    disconnectSocket(socket);
+    return disconnectSocket(socket);
   });
 });
 
