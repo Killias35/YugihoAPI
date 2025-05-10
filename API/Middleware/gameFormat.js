@@ -13,6 +13,11 @@ export default function checkGameFormat(req, res, next) {
         return res.status(400).json({ error: 'Header "Game" invalide (JSON attendu)' });
     }
 
+    if(!game.input) {
+        return res.status(400).json({ error: 'Key "input" manquant' });
+    }
+
+
     req.game = game;
     // Si tout est bon
     next();

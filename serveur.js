@@ -66,7 +66,7 @@ app.get('/logout', checkLogoutFormat, async (req, res) => {
 // Exemple de route protégée
 app.get('/game', checkGameFormat, authMiddleware, (req, res) => {
     const playerId = req.playerId;
-    const response = req.body;
+    const response = req.game.input;
 
     responseManager.addResponse(playerId, response);
 
