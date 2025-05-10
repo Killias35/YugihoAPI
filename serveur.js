@@ -50,8 +50,7 @@ app.get('/login', checkLoginFormat, async (req, res) => {
     if(ret.error) return res.status(400).json(ret);
 
     console.log(req.login.name + " est connecté");
-    return res.json({ success: "Connecté avec : " + req.login.name, token: ret });
-
+    return res.json(ret);
 
   } catch(err){
     console.error(err);
@@ -65,7 +64,8 @@ app.get('/register', checkRegisterFormat, async (req, res) => {
       if (ret.error) {
           return res.status(400).json(ret);
       }
-      return res.json({ success: "Inscrit avec : " + req.register.name, token: ret });
+      console.log(req.register.name + " est inscrit");
+      return res.json(ret);
   } catch (err) {
       console.error(err);
       return res.status(500).json({ error: 'Erreur serveur' });
@@ -86,7 +86,7 @@ app.get('/logout', authMiddleware, async (req, res) => {
 // Exemple de route protégée
 app.get('/game', checkGameFormat, authMiddleware, (req, res) => {
     const playerId = req.playerId;
-    const response = req.game.input;
+    const response = req.game.action;
 
     responseManager.addResponse(playerId, response);
 

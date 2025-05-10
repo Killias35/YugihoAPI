@@ -1,11 +1,14 @@
 import mysql from 'mysql2';
 import fs from 'fs';
+
 import Profile from './Tables/profile.js';
+import UserState from './Tables/userState.js';
 import CardTranslations from './Tables/cardTranslations.js';
 import CardEffect from './Tables/cardEffect.js';
 import Deck from './Tables/deck.js';
 import DeckData from './Tables/deckData.js';
 import Cards from './Tables/cards.js';
+
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -21,6 +24,7 @@ export default class Database {
         this.connection = mysql.createConnection(config);
 
         this.profile = new Profile(this.connection);
+        this.userState = new UserState(this.connection); 
         this.cardTranslations = new CardTranslations(this.connection);
         this.cardEffect = new CardEffect(this.connection);
         this.deck = new Deck(this.connection);

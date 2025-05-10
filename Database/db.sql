@@ -89,6 +89,14 @@ CREATE TABLE IF NOT EXISTS profile (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- Table des statuts des utilisateurs
+CREATE TABLE user_state (
+    player_id INT PRIMARY KEY,
+    current_menu VARCHAR(50), -- ex: 'main', 'deck', 'duel_room'
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 -- Ajout d'index pour fludifier la recherche --
 CREATE INDEX idx_card_name ON card_translations(name);
