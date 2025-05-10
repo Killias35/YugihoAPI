@@ -1,9 +1,10 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
+
 import authMiddleware from './API/Middleware/auth.js';
 import checkGameFormat from './API/Middleware/gameFormat.js';
 import checkRegisterFormat from './API/Middleware/registerFormat.js';
 import checkLoginFormat from './API/Middleware/loginFormat.js';
-import checkLogoutFormat from './API/Middleware/logoutFormat.js';
 
 import ResponseManager from './API/responseManager.js';
 import Database from './Database/dataAcess.js';
@@ -12,24 +13,43 @@ import LoginManager from './API/loginManager.js';
 const app = express();
 const PORT = 8080;
 
-// Middleware pour parser le JSON
-app.use(express.json());
-
-app.use(express.json());
-
 const responseManager = new ResponseManager();
 const database = new Database();
 const loginManager = new LoginManager(database, responseManager);
 
-// Injection possible dans les middlewares si besoin
-global.responseManager = responseManager; // simple solution pour test rapide
+
+app.locals.loginManager = loginManager;
+app.locals.responseManager = responseManager;
+
+
+const playerLimiter = rateLimit({
+  windowMs: 1000,      // Fenêtre de 1 seconde
+  max: 2,              // 2 requêtes maximum par fenêtre
+  keyGenerator: (req) => {
+    // On identifie chaque joueur avec son token (ou son IP si pas encore loggué)
+    try {
+      const login = JSON.parse(req.headers['login']);
+      return login.token || req.ip;
+    } catch {
+      return req.ip;
+    }
+  },
+  handler: (req, res) => {
+    return res.status(429).json({ error: 'Trop de requêtes, ralentis !' });
+  }
+});
+
+
+// Middleware pour parser le JSON
+app.use(express.json());
+app.use(playerLimiter);
 
 app.get('/login', checkLoginFormat, async (req, res) => {
   try{
     const ret = await loginManager.Login(req.login.name, req.login.password);
     if(ret.error) return res.status(400).json(ret);
 
-    console.log(responseManager.sessions);
+    console.log(req.login.name + " est connecté");
     return res.json({ success: "Connecté avec : " + req.login.name, token: ret });
 
 
@@ -52,9 +72,9 @@ app.get('/register', checkRegisterFormat, async (req, res) => {
   }
 });
 
-app.get('/logout', checkLogoutFormat, async (req, res) => {
+app.get('/logout', authMiddleware, async (req, res) => {
   try {
-      const ret = await loginManager.Logout(req.logout.token);
+      const ret = await loginManager.Logout(req.token.token);
       return res.json(ret);
   } catch (err) {
       console.error(err);

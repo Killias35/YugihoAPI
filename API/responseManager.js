@@ -17,7 +17,6 @@ export default class ResponseManager {
     }
     
     getPlayerIdFromToken(token) {
-        console.log(this.sessions);
         return this.sessions[token];
     }
     
