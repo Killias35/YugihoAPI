@@ -1,0 +1,64 @@
+export default class ResponseManager {
+    constructor() {
+        this.sessions = {};          // { token: playerId }
+        this.response = {};          // { playerId: response }
+        this.responseWaited = new Set(); // Set pour plus d'efficacité
+    }
+
+    // -- SESSION MANAGEMENT --
+    addSession(playerId, token) {
+        this.sessions[token] = playerId;
+    }
+
+    removeSession(token) {
+        const oldLenght = Object.keys(this.sessions).length;
+        delete this.sessions[token];
+        return oldLenght !== Object.keys(this.sessions).length;
+    }
+    
+    getPlayerIdFromToken(token) {
+        console.log(this.sessions);
+        return this.sessions[token];
+    }
+    
+    isLoggedIn(token) {
+        return token in this.sessions;
+    }
+
+    isPlayerConnected(playerId) {
+        return Object.values(this.sessions).includes(playerId);
+    }
+    
+
+    // -- RESPONSE MANAGEMENT --
+    waitForResponse(playerId) {
+        this.responseWaited.add(playerId);
+    }
+
+    isWaitingResponse(playerId) {
+        return this.responseWaited.has(playerId);
+    }
+
+    cancelWait(playerId) {
+        this.responseWaited.delete(playerId);
+    }
+
+    addResponse(playerId, response) {
+        if (this.isWaitingResponse(playerId)) {
+            this.response[playerId] = response;
+            this.cancelWait(playerId);
+        }
+    }
+
+    hasResponse(playerId) {
+        return playerId in this.response;
+    }
+
+    getResponse(playerId) {
+        return this.response[playerId];
+    }
+
+    removeResponse(playerId) {
+        delete this.response[playerId];
+    }
+}
