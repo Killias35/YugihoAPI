@@ -95,6 +95,9 @@ io.on('connection', (socket) => {
   console.log(`📡 Joueur connecté via WS : ${socket.playerId}`);
 
   socket.on('gameAction', async (action) => {
+    // verif du token encore valide
+
+
     console.log(`📥 Action reçue du joueur ${socket.playerId} : ${action}`);
     responseManager.addResponse(socket.playerId, action);
     socket.emit('gameResponse', { success: true });
