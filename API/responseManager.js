@@ -2,7 +2,6 @@ export default class ResponseManager {
     constructor() {
         this.sessions = {};          // { token: playerId }
         this.response = {};          // { playerId: response }
-        this.responseWaited = new Set(); // Set pour plus d'efficacité
     }
 
     // -- SESSION MANAGEMENT --
@@ -30,17 +29,6 @@ export default class ResponseManager {
     
 
     // -- RESPONSE MANAGEMENT --
-    waitForResponse(playerId) {
-        this.responseWaited.add(playerId);
-    }
-
-    isWaitingResponse(playerId) {
-        return this.responseWaited.has(playerId);
-    }
-
-    cancelWait(playerId) {
-        this.responseWaited.delete(playerId);
-    }
 
     addResponse(playerId, response) {
         if (this.isWaitingResponse(playerId)) {
