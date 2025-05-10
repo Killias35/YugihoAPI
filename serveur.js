@@ -74,16 +74,6 @@ app.get('/register', checkRegisterFormat, async (req, res) => {
   }
 });
 
-app.get('/logout', authMiddleware, async (req, res) => {
-  try {
-    const ret = await loginManager.Logout(req.token.token);
-    return res.json(ret);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Erreur serveur' });
-  }
-});
-
 // ----------- WebSocket AUTH + EVENTS -----------
 io.use(async (socket, next) => {    // lu une fois a l'init de la co
   const token = socket.handshake.auth?.token;
@@ -93,12 +83,12 @@ io.use(async (socket, next) => {    // lu une fois a l'init de la co
   }
   console.log(`📡 tentative de connexion via WS : ${token}\n\n`);
   const playerId = await responseManager.getPlayerIdFromToken(token);
-  console.log(playerId);
   if (!playerId) {
     return next(new Error('Token invalide'));
   }
 
   socket.playerId = playerId;
+  socket.token = token;
   next();
 });
 
@@ -113,6 +103,14 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`❌ Déconnexion du joueur ${socket.playerId}`);
+    try {
+      loginManager.Logout(socket.token).then((ret) => {
+        socket.emit('gameResponse', ret);
+      })
+    } catch (err) {
+      console.error(err);
+      socket.emit('gameResponse', { error: 'Erreur serveur' });
+    }
   });
 });
 

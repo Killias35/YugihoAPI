@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS profile (
 
 -- Table des statuts des utilisateurs
 CREATE TABLE user_state (
-    player_id INT PRIMARY KEY,
+    player_id VARCHAR(100) PRIMARY KEY,
     current_menu VARCHAR(50), -- ex: 'main', 'deck', 'duel_room'
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
