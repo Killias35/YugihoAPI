@@ -85,14 +85,15 @@ app.get('/logout', authMiddleware, async (req, res) => {
 });
 
 // ----------- WebSocket AUTH + EVENTS -----------
-io.use(async (socket, next) => {
+io.use(async (socket, next) => {    // lu une fois a l'init de la co
   const token = socket.handshake.auth?.token;
 
   if (!token || token === undefined) {
     return next(new Error('Token manquant'));
   }
-  console.log(`📡 Joueur connecté via WS : ${token}\n\n\n`);
+  console.log(`📡 tentative de connexion via WS : ${token}\n\n`);
   const playerId = await responseManager.getPlayerIdFromToken(token);
+  console.log(playerId);
   if (!playerId) {
     return next(new Error('Token invalide'));
   }

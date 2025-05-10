@@ -1,4 +1,5 @@
 import MenuManager from '../Menus/MenuManager.js';
+import crypto from 'crypto';
 
 export default class LoginManager {
     constructor(database, responseManager) {
@@ -10,10 +11,10 @@ export default class LoginManager {
         // ne pas oublier de hash le password
         const profile = await this.database.profile.getProfile(pseudo, password);
         if(!profile) return {error: "Pseudo ou mot de passe incorrect" + profile};
-        const ret = this.responseManager.isPlayerConnected(profile.id);
+        const ret = this.responseManager.isPlayerConnected(profile.uuid);
         if (ret) return {error: "Joueur deja connecté"};
         
-        return await this.loginConfirmed(profile.id);
+        return await this.loginConfirmed(profile.uuid);
     }
 
     async Logout(token){
@@ -31,7 +32,7 @@ export default class LoginManager {
         if(!profile) {
             profile = await this.database.profile.addProfile({pseudo, password});
 
-            return await this.loginConfirmed(profile.id);
+            return await this.loginConfirmed(profile.uuid);
         }
         return {error: "Compte déjà existant"};
     }

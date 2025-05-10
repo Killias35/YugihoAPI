@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export default class Profile{
     constructor(connection){
         this.connection = connection;
