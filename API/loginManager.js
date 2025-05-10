@@ -11,10 +11,12 @@ export default class LoginManager {
         // ne pas oublier de hash le password
         const profile = await this.database.profile.getProfile(pseudo, password);
         if(!profile) return {error: "Pseudo ou mot de passe incorrect" + profile};
-        const ret = this.responseManager.isPlayerConnected(profile.uuid);
-        if (ret) return {error: "Joueur deja connecté"};
+        const token = this.responseManager.getTokenFromPlayerId(profile.uuid);
+        if (token) {
+            await this.Logout(token);
+        }
         
-        return await this.loginConfirmed(profile.uuid);
+        return await this.loginConfirmed(profile.id);
     }
 
     async Logout(token){
@@ -32,7 +34,7 @@ export default class LoginManager {
         if(!profile) {
             profile = await this.database.profile.addProfile({pseudo, password});
 
-            return await this.loginConfirmed(profile.uuid);
+            return await this.loginConfirmed(profile.id);
         }
         return {error: "Compte déjà existant"};
     }
@@ -40,7 +42,6 @@ export default class LoginManager {
     async loginConfirmed(profileId){
         const token = crypto.randomUUID();
         this.responseManager.addSession(profileId, token);
-        this.database.userState.addUserState(profileId, "none");
 
         const menu = new MenuManager(this.database, this.responseManager);
         const ret = await menu.handleMenu(profileId, "");

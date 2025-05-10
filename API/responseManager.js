@@ -1,17 +1,23 @@
 export default class ResponseManager {
-    constructor() {
+    constructor(database) {
         this.sessions = {};          // { token: playerId }
         this.response = {};          // { playerId: response }
+        this.database = database;
     }
 
     // -- SESSION MANAGEMENT --
     addSession(playerId, token) {
         this.sessions[token] = playerId;
+
+        this.database.userState.addUserState(playerId, "none");
     }
 
     removeSession(token) {
+        this.database.userState.removeUserState(this.getPlayerIdFromToken(token));
+        
         const oldLenght = Object.keys(this.sessions).length;
         delete this.sessions[token];
+
         return oldLenght !== Object.keys(this.sessions).length;
     }
     
@@ -19,6 +25,10 @@ export default class ResponseManager {
         return this.sessions[token] || null;
     }
     
+    getTokenFromPlayerId(playerId) {
+        return Object.keys(this.sessions).find((token) => this.sessions[token] === playerId) || null;
+    }
+
     isLoggedIn(token) {
         return token in this.sessions;
     }
@@ -31,10 +41,7 @@ export default class ResponseManager {
     // -- RESPONSE MANAGEMENT --
 
     addResponse(playerId, response) {
-        if (this.isWaitingResponse(playerId)) {
-            this.response[playerId] = response;
-            this.cancelWait(playerId);
-        }
+        this.response[playerId] = response;
     }
 
     hasResponse(playerId) {

@@ -4,7 +4,6 @@ import { Server } from 'socket.io';
 import rateLimit from 'express-rate-limit';
 
 import authMiddleware from './API/Middleware/auth.js';
-import checkGameFormat from './API/Middleware/gameFormat.js';
 import checkRegisterFormat from './API/Middleware/registerFormat.js';
 import checkLoginFormat from './API/Middleware/loginFormat.js';
 
@@ -22,8 +21,8 @@ const io = new Server(server, {
 
 const PORT = 8080;
 
-const responseManager = new ResponseManager();
 const database = new Database();
+const responseManager = new ResponseManager(database);
 const loginManager = new LoginManager(database, responseManager);
 
 app.locals.loginManager = loginManager;
