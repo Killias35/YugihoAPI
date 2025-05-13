@@ -43,9 +43,6 @@ export default class LoginManager {
         const token = crypto.randomUUID();
         this.responseManager.addSession(profileId, token);
 
-        const menu = new MenuManager(this.database, this.responseManager);
-        const ret = await menu.handleMenu(profileId, "");
-
-        return {token: token, message: ret.message, action: ret.action};
+        return {token: token, message: "bien connecté !", action: "veuillez vous connecter via websocket avec le nouveau token..."};
     }
 }

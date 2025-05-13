@@ -10,6 +10,7 @@ import checkLoginFormat from './API/Middleware/loginFormat.js';
 import ResponseManager from './API/responseManager.js';
 import Database from './Database/dataAcess.js';
 import LoginManager from './API/loginManager.js';
+import MenuManager from './Menus/MenuManager.js';
 
 const app = express();
 const server = http.createServer(app); // Important: socket.io a besoin du serveur brut
@@ -24,6 +25,7 @@ const PORT = 8080;
 const database = new Database();
 const responseManager = new ResponseManager(database);
 const loginManager = new LoginManager(database, responseManager);
+const menuManager = new MenuManager(database);
 
 app.locals.loginManager = loginManager;
 app.locals.responseManager = responseManager;
@@ -93,6 +95,10 @@ io.use(async (socket, next) => {    // lu une fois a l'init de la co
 
 io.on('connection', (socket) => {
   console.log(`📡 Joueur connecté via WS : ${socket.playerId}`);
+  
+  menuManager.handleMenu(socket.playerId, {}).then((ret) => {
+    socket.emit("gameResponse", ret);
+  });
 
   socket.on('gameAction', async (action) => {
     // verif du token encore valide
@@ -101,10 +107,10 @@ io.on('connection', (socket) => {
       return disconnectSocket(socket);
     };
 
-
     console.log(`📥 Action reçue du joueur ${socket.playerId} : ${action}`);
-    responseManager.addResponse(socket.playerId, action);
-    socket.emit('gameResponse', { success: true });
+    menuManager.handleMenu(socket.playerId, action.action).then((ret) => {
+      socket.emit("gameResponse", ret);
+    })
   });
 
   socket.on('disconnect', () => {

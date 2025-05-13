@@ -9,7 +9,7 @@ export default class ResponseManager {
     addSession(playerId, token) {
         this.sessions[token] = playerId;
 
-        this.database.userState.addUserState(playerId, "none");
+        this.database.userState.addUserState(playerId, "principal");
     }
 
     removeSession(token) {

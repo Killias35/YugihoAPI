@@ -3,27 +3,28 @@ export default class MenuManager {
         this.db = database; // Accès à ta base pour récupérer l'état de menu du joueur
     }
 
-    async handleMenu(playerId, userInput) {
+    async handleMenu(playerId, action) {
         // Récupérer l'état de menu actuel
         const menuState = await this.db.userState.getUserState(playerId); // par ex: "main", "deck"
+        if (menuState.error) menuState = action;
 
         switch (menuState) {
             case 'principal':
-                return this.mainMenu(playerId, userInput);
+                return this.mainMenu(playerId, action);
             case 'deck':
-                return this.deckMenu(playerId, userInput);
+                return this.deckMenu(playerId, action);
             case 'duelRoom':
-                return this.duelRoomMenu(playerId, userInput);
+                return this.duelRoomMenu(playerId, action);
             default:
-                return { message: 'Menu Disponible: "principal", "deck", "duelRoom', action: ['principal', 'deck', 'duelRoom'] };
+                return { message: 'Menu Disponible: [principal, deck, duelRoom]', action: ['principal', 'deck', 'duelRoom'] };
         }
     }
 
     async mainMenu(playerId, input) {
-        if (!input) {
+        if (!input || typeof input !== 'string') {
             return {
                 message: 'Menu principal : Tapez "deck", "duel", ou "amis"',
-                expectedInputs: ['deck', 'duel', 'amis']
+                action: ['deck', 'duel', 'amis']
             };
         }
 
