@@ -6,9 +6,10 @@ export default class MenuManager {
     async handleMenu(playerId, action) {
         // Récupérer l'état de menu actuel
         const menuState = await this.db.userState.getUserState(playerId); // par ex: "main", "deck"
+        console.log(menuState);
         if (menuState.error) menuState = action;
 
-        switch (menuState) {
+        switch (menuState.current_menu) {
             case 'principal':
                 return this.mainMenu(playerId, action);
             case 'deck':
