@@ -52,6 +52,8 @@ export default class MenuManager {
             };
         }
 
+        // return deck.handleMenu(playerId, input);
+
         switch (input.toLowerCase()) {
             case 'voir':
                 // Appelle un manager de deck, ou renvoie les decks
