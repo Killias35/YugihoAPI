@@ -1,4 +1,5 @@
 import Database from '../dataAcess.js';
+import crypto from 'crypto';
 
 export default class ProfilesSeeder {
   constructor(language_code = 'en') {

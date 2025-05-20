@@ -62,4 +62,17 @@ export default class Deck {
         });
     }
     
+    getDeckOfPlayer(playerId) {
+        const connection = this.connection;
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM deck WHERE created_by = ?',
+                [playerId],
+                (err, results) => {
+                    if (err) return reject(err);
+                    resolve(results);
+                }
+            );
+        });
+    }
 }

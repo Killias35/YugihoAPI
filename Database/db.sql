@@ -2,6 +2,29 @@
 CREATE DATABASE IF NOT EXISTS YuGiHoAPI;
 USE YuGiHoAPI;
 
+
+-- Table des profils utilisateurs
+CREATE TABLE IF NOT EXISTS profile (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(100) NOT NULL UNIQUE,
+    pseudo VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Table des statuts des utilisateurs
+CREATE TABLE user_state (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    player_id INT NOT NULL,
+    current_menu VARCHAR(50), -- ex: 'main', 'deck', 'duel_room'
+    expected_inputs VARCHAR(255),
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (player_id) REFERENCES profile(id) ON DELETE CASCADE
+);
+
 -- Table des cartes
 CREATE TABLE IF NOT EXISTS cards (
     id VARCHAR(100) PRIMARY KEY,
@@ -58,9 +81,11 @@ CREATE TABLE IF NOT EXISTS deck (
     extra_size INT DEFAULT 0,
     side_size INT DEFAULT 0,
 
-    created_by VARCHAR(100),
+    created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (created_by) REFERENCES profile(id)
 );
 
 -- Table de liaison entre deck et cartes (renommée en deck_data)
@@ -76,27 +101,6 @@ CREATE TABLE IF NOT EXISTS deck_data (
 
     FOREIGN KEY (deck_id) REFERENCES deck(id) ON DELETE CASCADE,
     FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE
-);
-
--- Table des profils utilisateurs
-CREATE TABLE IF NOT EXISTS profile (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    uuid VARCHAR(100) NOT NULL UNIQUE,
-    pseudo VARCHAR(100) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- Table des statuts des utilisateurs
-CREATE TABLE user_state (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    player_id INT NOT NULL,
-    current_menu VARCHAR(50), -- ex: 'main', 'deck', 'duel_room'
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (player_id) REFERENCES profile(id) ON DELETE CASCADE
 );
 
 

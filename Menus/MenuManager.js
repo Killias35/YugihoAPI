@@ -1,3 +1,7 @@
+import { handlemainMenu} from './MainMenu.js';
+import { handleDeckMenu } from './DeckMenu.js';
+import { handleDeckListeMenu } from './DeckListeMenu.js';
+
 export default class MenuManager {
     constructor(database) {
         this.db = database; // Accès à ta base pour récupérer l'état de menu du joueur
@@ -6,69 +10,27 @@ export default class MenuManager {
     async handleMenu(playerId, action) {
         // Récupérer l'état de menu actuel
         const menuState = await this.db.userState.getUserState(playerId); // par ex: "main", "deck"
-        console.log(menuState);
-        if (menuState.error) menuState = action;
+        const expectedInputs = await this.db.userState.getExpectedInputs(playerId);
+
+        console.log("debug", action, expectedInputs);
+
+        if (menuState.error) menuState = "principale";                    // defaut
+        if (expectedInputs === null) expectedInputs = [];
+        if (action === null || action.action === undefined) action = { action: '' };
+        if (action.action !== '' && !expectedInputs.includes(action.action)) return { message: 'Commande inconnue.' };
 
         switch (menuState.current_menu) {
             case 'principal':
-                return this.mainMenu(playerId, action);
+                return await handlemainMenu(playerId, action, this.db);
             case 'deck':
-                return this.deckMenu(playerId, action);
-            case 'duelRoom':
-                return this.duelRoomMenu(playerId, action);
+                return await handleDeckMenu(playerId, action, this.db);
+            case 'deck liste':
+                return await handleDeckListeMenu(playerId, action, this.db);
             default:
+                menuState = "principale"; 
                 return { message: 'Menu Disponible: [principal, deck, duelRoom]', action: ['principal', 'deck', 'duelRoom'] };
         }
     }
 
-    async mainMenu(playerId, input) {
-        if (!input || typeof input !== 'string') {
-            return {
-                message: 'Menu principal : Tapez "deck", "duel", ou "amis"',
-                action: ['deck', 'duel', 'amis']
-            };
-        }
 
-        switch (input.toLowerCase()) {
-            case 'deck':
-                await this.db.setMenuState(playerId, 'deck');
-                return { message: 'Redirection vers gestion de deck...' };
-            case 'duel':
-                await this.db.setMenuState(playerId, 'duelRoom');
-                return { message: 'Redirection vers la salle de duel...' };
-            case 'amis':
-                // Pas encore géré
-                return { message: 'Fonctionnalité amis en cours de développement.' };
-            default:
-                return { message: 'Commande inconnue. Essayez "deck", "duel", ou "amis".' };
-        }
-    }
-
-    async deckMenu(playerId, input) {
-        if (!input) {
-            return {
-                message: 'Menu Deck : Tapez "voir", "créer", "retour"',
-                expectedInputs: ['voir', 'créer', 'retour']
-            };
-        }
-
-        // return deck.handleMenu(playerId, input);
-
-        switch (input.toLowerCase()) {
-            case 'voir':
-                // Appelle un manager de deck, ou renvoie les decks
-                return { message: 'Voici vos decks : [...]' };
-            case 'créer':
-                return { message: 'Création de deck en cours...' };
-            case 'retour':
-                await this.db.setMenuState(playerId, 'main');
-                return { message: 'Retour au menu principal...' };
-            default:
-                return { message: 'Commande inconnue dans le menu Deck.' };
-        }
-    }
-
-    async duelRoomMenu(playerId, input) {
-        return { message: 'Bienvenue dans la salle de duel ! Fonction à venir.' };
-    }
 }

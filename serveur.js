@@ -108,7 +108,7 @@ io.on('connection', (socket) => {
     };
 
     console.log(`📥 Action reçue du joueur ${socket.playerId} : ${action}`);
-    menuManager.handleMenu(socket.playerId, action.action).then((ret) => {
+    menuManager.handleMenu(socket.playerId, action).then((ret) => {
       socket.emit("gameResponse", ret);
     })
   });

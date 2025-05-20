@@ -58,4 +58,32 @@ export default class UserState {
             );
         });
     }
+
+    getExpectedInputs(playerId){
+        const connection = this.connection;
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT expected_inputs FROM user_state WHERE player_id = ?',
+                [playerId],
+                (err, results) => {
+                    if (err) return reject(err);
+                    resolve(results[0] || []);
+                }
+            );
+        });
+    }
+
+    setExpectedInputs(playerId, expectedInputs){
+        const connection = this.connection;
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'UPDATE user_state SET expected_inputs = ? WHERE player_id = ?',
+                [expectedInputs, playerId],
+                (err, result) => {
+                    if (err) return reject(err);
+                    resolve(result.affectedRows > 0 ? { playerId, expectedInputs } : null);
+                }
+            );
+        });
+    }
 }

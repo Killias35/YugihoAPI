@@ -61,7 +61,7 @@
   <button onclick="connectSocket()">🔌 Se connecter</button>
   <button onclick="disconnectSocket()">❌ Déconnecter</button>
 
-  <textarea id="jsonInput" rows="6" placeholder='📤 Entre ton JSON ici, ex: {"action": "duel", "target": "Seto Kaiba"}'></textarea>
+  <textarea id="jsonInput" rows="6" placeholder='📤 Entre ton Action ici'></textarea>
 
   <button onclick="sendMessage()">📨 Envoyer</button>
 
@@ -117,12 +117,14 @@
       }
 
       const raw = document.getElementById('jsonInput').value.trim();
-      if (!raw) return;
+      console.log(raw);
+      const data = {
+        "action": raw
+      };
 
       try {
-        const json = JSON.parse(raw);
-        socket.emit("gameAction", json);
-        log(`📤 Envoyé : ${JSON.stringify(json)}`, 'success');
+        socket.emit("gameAction", data);
+        log(`📤 Envoyé : ${JSON.stringify(data)}`, 'success');
       } catch (err) {
         log("❗ JSON invalide : " + err.message, 'error');
       }
