@@ -17,10 +17,10 @@ CREATE TABLE IF NOT EXISTS profile (
 -- Table des statuts des utilisateurs
 CREATE TABLE user_state (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    player_id INT NOT NULL,
+    player_id INT NOT NULL UNIQUE,
     current_menu VARCHAR(50), -- ex: 'main', 'deck', 'duel_room'
-    expected_inputs VARCHAR(255),
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expected_inputs VARCHAR(500) DEFAULT '{"expectedInputs":[]}', -- type corrigé
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (player_id) REFERENCES profile(id) ON DELETE CASCADE
 );

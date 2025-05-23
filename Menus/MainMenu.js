@@ -1,4 +1,4 @@
-
+import { handleDeckMenu } from './DeckMenu.js';
 
 export async function handlemainMenu(playerId, input, db) {
     db.userState.editUserState(playerId, 'principal');

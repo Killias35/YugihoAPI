@@ -1,6 +1,7 @@
 import { handlemainMenu} from './MainMenu.js';
 import { handleDeckMenu } from './DeckMenu.js';
 import { handleDeckListeMenu } from './DeckListeMenu.js';
+import { exitCode } from 'process';
 
 export default class MenuManager {
     constructor(database) {
@@ -11,9 +12,7 @@ export default class MenuManager {
         // Récupérer l'état de menu actuel
         const menuState = await this.db.userState.getUserState(playerId); // par ex: "main", "deck"
         const expectedInputs = await this.db.userState.getExpectedInputs(playerId);
-
-        console.log("debug", action, expectedInputs);
-
+        console.log("ExpectedInputs:", expectedInputs);
         if (menuState.error) menuState = "principale";                    // defaut
         if (expectedInputs === null) expectedInputs = [];
         if (action === null || action.action === undefined) action = { action: '' };

@@ -67,23 +67,37 @@ export default class UserState {
                 [playerId],
                 (err, results) => {
                     if (err) return reject(err);
-                    resolve(results[0] || []);
+                    resolve(safeJsonParse(results[0].expected_inputs) || []);
                 }
             );
         });
     }
 
     setExpectedInputs(playerId, expectedInputs){
+        if (!expectedInputs || expectedInputs === null) expectedInputs = [];
         const connection = this.connection;
         return new Promise((resolve, reject) => {
             connection.query(
                 'UPDATE user_state SET expected_inputs = ? WHERE player_id = ?',
-                [expectedInputs, playerId],
+                [JSON.stringify({expectedInputs:expectedInputs}), playerId],
                 (err, result) => {
                     if (err) return reject(err);
                     resolve(result.affectedRows > 0 ? { playerId, expectedInputs } : null);
                 }
             );
         });
+    }
+}
+
+function safeJsonParse(str) {
+    try {
+        if (str === undefined) return [];
+        const parsed = JSON.parse(str);
+        if(parsed === null) return [];
+        console.log('Parsed JSON string: ', parsed);
+        return parsed.expectedInputs; // Retourne toujours une liste
+    } catch (e) {
+        console.log('Error parsing JSON string: ', str, e);
+        return {message: "erreur de parsing depuis la db"}; // Si parsing échoue, retourne une liste vide
     }
 }
