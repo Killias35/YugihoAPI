@@ -94,7 +94,6 @@ function safeJsonParse(str) {
         if (str === undefined) return [];
         const parsed = JSON.parse(str);
         if(parsed === null) return [];
-        console.log('Parsed JSON string: ', parsed);
         return parsed.expectedInputs; // Retourne toujours une liste
     } catch (e) {
         console.log('Error parsing JSON string: ', str, e);

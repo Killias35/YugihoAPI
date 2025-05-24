@@ -14,7 +14,7 @@ export async function handlemainMenu(playerId, input, db) {
 
     switch (input.action.toLowerCase()) {
         case 'deck':
-            return await handleDeckMenu(playerId, input, db);
+            return await handleDeckMenu(playerId, null, db);
         default:
             return { message: 'Commande inconnue. Essayez "deck", "duel", ou "amis".' };
     }

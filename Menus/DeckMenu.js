@@ -3,6 +3,7 @@ import {handleDeckListeMenu} from './DeckListeMenu.js';
 
 export async function handleDeckMenu(playerId, input, db) {
     db.userState.editUserState(playerId, 'deck');
+    db.userState.setExpectedInputs(playerId, ['voir', 'creer', 'retour']);
     const expectedInputs = ['voir', 'creer', 'retour'];
 
     if (!input || !input.action) {
@@ -15,11 +16,11 @@ export async function handleDeckMenu(playerId, input, db) {
     // return deck.handleMenu(playerId, input);
     switch (input.action.toLowerCase()) {
         case 'voir':
-            return handleDeckListeMenu(playerId, {}, db);
+            return handleDeckListeMenu(playerId, null, db);
         case 'creer':
             return { message: 'Création de deck en cours...' };
         case 'retour':
-            return handlemainMenu(playerId, input, db);
+            return handlemainMenu(playerId, null, db);
         default:
             return { message: 'Commande inconnue dans le menu Deck.' };
     }

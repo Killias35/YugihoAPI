@@ -7,7 +7,7 @@ export async function handleDeckListeMenu(playerId, input, db) {
         return {
             message: 'Voici la liste des decks',
             expectedInputs: expectedInputs,
-            infos: db.decks.getDeckOfPlayer(playerId)
+            infos: db.deck.getDeckOfPlayer(playerId)
         };
     }
 
@@ -23,7 +23,7 @@ export async function handleDeckListeMenu(playerId, input, db) {
 }
 
 function listDeckMenu(playerId, db) {
-    const decks = db.decks.getDeckOfPlayer(playerId);
+    const decks = db.deck.getDeckOfPlayer(playerId);
     
     return {
         message: 'Liste des decks :',
